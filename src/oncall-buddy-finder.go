@@ -5,9 +5,7 @@ import (
     "fmt"
     "log"
     "net/http"
-    "net/url"
     "os"
-    "os/user"
     "encoding/json"
     "io/ioutil"
     "path/filepath"
@@ -25,48 +23,48 @@ import (
 
 // globals
 type Configuration struct {
-  GoogleApiSecretFile string
   CalendarId string
+  GoogleApiTokenFile string
+  GoogleApiSecretFile string
   TimezoneName string
   CheckInterval uint64
   BuddiesList map[string]string
+  FileTemplate string
+  FileDest string
   SlackWebhookUrl string
   SlackChannel string
   NotificationInterval uint64
-  FileTemplate string
-  FileDest string
 }
 
-var defaultConfigDir string = "/etc/oncall-buddy-finder"
 var buddiesList map[string]string
 
 var config Configuration = Configuration{
-  GoogleApiSecretFile: filepath.Join(defaultConfigDir, "client_secret.json"),
+  GoogleApiTokenFile: "/var/run/oncall-buddy-finder/google_token.json",
+  GoogleApiSecretFile: "/etc/oncall-buddy-finder/client_secret.json",
   CalendarId: "",
   TimezoneName: "UTC",
   CheckInterval: 60,
   BuddiesList: buddiesList,
+  FileTemplate: "/etc/oncall-buddy-finder/oncall.vars.tpl",
+  FileDest: "/var/run/oncall-buddy-finder/oncall.vars",
   SlackWebhookUrl: "",
   SlackChannel: "#general",
   NotificationInterval: 12,
-  FileTemplate: "/etc/oncall-buddy-finder/oncall.vars.tpl",
-  FileDest: "/var/run/oncall.vars",
 }
 
-var configFilePath string = ""
 var ctx = context.Background()
 var client *http.Client
 var timezone *time.Location = time.UTC
 var currentBuddy string
 
-// TODO: would love to get rid of google oauth token if possible
-// TODO: Google token cache should be in config also
-// TODO: config file should be passed on the command line insted of env ?
-// TODO: should no fail if no config file and should rely on env & defaults
+// TODO: should not fail if no config file and should rely on env & defaults
 // TODO: implement a sanity check
-// TODO: scheduler init should be more flexible (arrays of times, start at certain time, etc...)
-// TODO: How to get the phone numbers through the env variables ?
+// TODO: config file should be passed on the command line insted of env ?
 // TODO: a Buddy should be a struct : Buddy.Name, Buddy.Phone
+// TODO: instead of looking on 24hours, make that configurable
+// TODO: How to get the phone numbers through the env variables ?
+// TODO: would love to get rid of google oauth token if possible
+// TODO: scheduler init should be more flexible (arrays of times, start at certain time, etc...)
 
 /********************************************************************
  * Functions
@@ -109,14 +107,7 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 // tokenCacheFile generates credential file path/filename.
 // It returns the generated credential path/filename.
 func tokenCacheFile() (string, error) {
-  usr, err := user.Current()
-  if err != nil {
-    return "", err
-  }
-  tokenCacheDir := filepath.Join(usr.HomeDir, ".credentials")
-  os.MkdirAll(tokenCacheDir, 0700)
-  return filepath.Join(tokenCacheDir,
-    url.QueryEscape("oncall-buddy-finder.json")), err
+  return filepath.Abs(config.GoogleApiTokenFile)
 }
 
 // tokenFromFile retrieves a Token from a given file path.
@@ -197,7 +188,6 @@ func LoadConfiguration(configFilePath string, config *Configuration) {
   if (err != nil) {
     log.Fatalf("Can't load configuration file: %s\n", err)
   }
-  //log.Printf("DEBUG: config values: %s\n", spew.Sprintf("%+v", config))
 }
 
 // setup a correct connexion to google API
@@ -207,8 +197,6 @@ func setupGoogleApiAccess() {
       log.Fatalf("Unable to read client secret file: %v", err)
   }
 
-  // If modifying these scopes, delete your previously saved credentials
-  // at ~/.credentials/calendar-go-quickstart.json
   config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
   if err != nil {
       log.Fatalf("Unable to parse client secret file to config: %v", err)
@@ -290,7 +278,11 @@ func getCurrentBuddyName() (buddy string) {
 
 // find the phone number of the current buddy who is oncall
 func getCurrentBuddyPhone(name string) (phoneNumber string) {
-  phoneNumber = config.BuddiesList[name]
+  phoneNumber, exists := config.BuddiesList[name]
+  if !exists {
+    log.Printf("ERROR: %s phone number is not known in the buddies list: %s", name, config.BuddiesList)
+    return
+  }
   return
 }
 
