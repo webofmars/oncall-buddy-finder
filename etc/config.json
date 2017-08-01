@@ -1,0 +1,15 @@
+{
+  "GoogleApiSecretFile": "/etc/oncall-buddy-finder/client_secret.json",
+  "CalendarId": "calendar_id_xxxxxxxxxxxx@group.calendar.google.com",
+  "TimezoneName": "Europe/Paris",
+  "CheckInterval": 1,
+  "BuddiesList": {
+    "john": "15551111",
+    "sue": "15552222"
+  },
+  "SlackChannel": "oncall",
+  "SlackWebhookUrl": "https://hooks.slack.com/services/xxxxxxxxx/yyyyyyyy/zzzzzzzzzzzzzz",
+  "NotificationInterval": 1,
+  "FileTemplate": "/etc/oncall-buddy-finder/oncall.vars.tpl",
+  "FileDest": "/var/run/oncall-contact.vars"
+}

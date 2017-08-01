@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+  oncallbuddyfinder:
+    image: webofmars/oncall-buddy-finder:develop
+    stdin_open: true
+    tty: true
+    volumes:
+      - ../secrets/client_secret.json:/etc/oncall-buddy-finder/client_secret.json
+      - ../secrets/oncall-buddy-finder.json:/etc/oncall-buddy-finder/config.json
+      - ../secrets/google_token.json:/root/.credentials/oncall-buddy-finder.json
+    #entrypoint: ash -c "while true; do echo '.'; sleep 2; done"
