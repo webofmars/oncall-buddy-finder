@@ -1,4 +1,7 @@
 **/.DS_Store
 
+# editor stuff
+/.idea
+
 # project stuff
 /secrets/
