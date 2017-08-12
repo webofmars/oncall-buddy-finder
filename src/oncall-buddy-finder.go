@@ -19,6 +19,7 @@ import (
     "github.com/tkanos/gonfig"
     "github.com/ashwanthkumar/slack-go-webhook"
     "github.com/davecgh/go-spew/spew"
+    "strings"
 )
 
 // globals
@@ -57,9 +58,10 @@ var client *http.Client
 var timezone *time.Location = time.UTC
 var currentBuddy string
 
+// TODO: in case of buddy not found should notify a warning !
 // TODO: should not fail if no config file and should rely on env & defaults
 // TODO: implement a sanity check
-// TODO: config file should be passed on the command line insted of env ?
+// TODO: config file should be passed on the command line instead of env ?
 // TODO: a Buddy should be a struct : Buddy.Name, Buddy.Phone
 // TODO: instead of looking on 24hours, make that configurable
 // TODO: How to get the phone numbers through the env variables ?
@@ -268,7 +270,7 @@ func getCurrentBuddyName() (buddy string) {
 
   if len(events.Items) > 0 {
       for _, i := range events.Items {
-        if i.Summary != "" { buddy = i.Summary }
+        if i.Summary != "" { buddy = strings.ToLower(i.Summary) }
         break
       }
   }
@@ -320,6 +322,7 @@ func SlackNotification(msg string, slackWebhookUrl string, slackChannelName stri
   payload := slack.Payload {
       Text: msg,
       Channel: slackChannelName,
+      LinkNames: "1",
   }
 
   err := slack.Send(slackWebhookUrl, "", payload)
@@ -356,12 +359,20 @@ func BuddyWatcherTask() {
 // a notification task to be sure who is on call
 func BuddyNotificationTask() {
 
+  var msg string = ""
+
   if (len(config.SlackWebhookUrl) == 0) {
     log.Printf("SlackWebhookUrl is no set, skipping notification\n")
     return
   }
 
-  var msg string = fmt.Sprintf("<@channel>: Just for your information *%s* is on call", currentBuddy)
+  switch l := len(currentBuddy); {
+  case l > 0:
+    msg = fmt.Sprintf("<!channel>: Just for your information *%s* is on call", currentBuddy)
+  default:
+    msg = "<@channel>: :warning: Error can't find any buddy oncall !\nCheck the calendar!"
+  }
+
   err := SlackNotification(msg, config.SlackWebhookUrl, config.SlackChannel)
   if (err != nil) {
     log.Printf("WARN: notification hasn't been sent: %s", err)
@@ -383,6 +394,10 @@ func main() {
     gocron.Every(config.CheckInterval).Minute().Do(BuddyWatcherTask)
     gocron.Every(config.NotificationInterval).Hours().Do(BuddyNotificationTask)
 
+    // run it once at startup time
+    gocron.RunAll()
+
+    // schedule other runs
     <- gocron.Start()
 
     log.Println("finished buddy finder")
