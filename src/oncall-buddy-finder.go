@@ -142,11 +142,10 @@ func setup() {
 
   spew.Config.Indent = "\t"
 
-  timezone = getTimezone(config.TimezoneName)
-
   var configFilePath = GuessConfigurationFilename()
   log.Printf("INFO: Using %s config file", configFilePath)
   LoadConfiguration(configFilePath, &config)
+  timezone = getTimezone(config.TimezoneName)
 }
 
 // try to guess the config file to use (based on $CONFIG or $ENV)
@@ -226,8 +225,8 @@ func getCalendarEvents(calendarId string, TimeMin time.Time, TimeMax time.Time, 
     return nil, err
   }
 
-  log.Printf("Min Time : %s\n", TimeMin.String())
-  log.Printf("Max Time : %s\n", TimeMax.String())
+  log.Printf("TimeMin : %s\n", TimeMin.Format(time.RFC3339))
+  log.Printf("TimeMax : %s\n", TimeMax.Format(time.RFC3339))
 
   // get the calendars events
   events, err := svc.Events.List(config.CalendarId).
