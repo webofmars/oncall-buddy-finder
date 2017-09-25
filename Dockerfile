@@ -1,6 +1,8 @@
-FROM golang:1.8.3-alpine3.6
+FROM golang:1.9-stretch
 
-RUN apk add --no-cache git
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update -y && apt-get upgrade -y && \
+    apt-get -y install git && apt-get -y autoclean
 
 WORKDIR /go/src/oncall-buddy-finder
 COPY src/ .
