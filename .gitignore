@@ -1,7 +1,10 @@
 **/.DS_Store
 
 # editor stuff
-/.idea
+**/.idea
+**/.vscode
+**/*.sublime-workspace
+**/*.sublime-project
 
 # project stuff
 /secrets/
