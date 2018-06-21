@@ -284,7 +284,7 @@ func getCurrentBuddy(interval time.Duration) (buddy OncallBuddy, err error) {
 	spew.Printf("interval : %s\n", interval)
 
 	// get the timeframe
-	tmin := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), int(00), int(0), config._Timezone)
+	tmin := time.Date(time.Now().Year(), time.Now().Month(), time.Now().Day(), time.Now().Hour(), time.Now().Minute(), int(00), int(0), time.Now().Location())
 	tmax := tmin.Add(interval)
 
 	// get the claendar events for this timeframe
