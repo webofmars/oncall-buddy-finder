@@ -14,7 +14,7 @@ FROM alpine:latest
 
 LABEL maintainer="contact@webofmars.com"
 
-RUN apk add --no-cache tzdata && \
+RUN apk add --no-cache tzdata ca-certificates && \
     mkdir /var/run/oncall-buddy-finder && \
     chmod 777 /var/run/oncall-buddy-finder
 
