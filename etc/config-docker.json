@@ -2,7 +2,9 @@
   "CalendarId": "calendar_id_xxxxxxxxxxxx@group.calendar.google.com",
   "GoogleApiSecretFile": "/etc/oncall-buddy-finder/client_secret.json",
   "GoogleApiTokenFile": "/var/run/oncall-buddy-finder/oncall-buddy-finder",
-  "CheckInterval": 1,
+  "CheckAtStartup": true,
+  "CheckFirstAt": "08:00",
+  "CheckInterval": "1h",
   "TimezoneName": "Europe/Paris",
   "BuddiesList": {
     "john": "15551111",

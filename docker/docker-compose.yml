@@ -7,7 +7,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ../secrets/client_secret.json:/etc/oncall-buddy-finder/client_secret.json
+      - ../secrets/client_secret_770159757646-k0e8c6j0mo9csb715un12br3gjddtacp.apps.googleusercontent.com.json:/etc/oncall-buddy-finder/client_secret.json
       - ../secrets/config-docker.json:/etc/oncall-buddy-finder/config-docker.json
       - /tmp/oncall-buddy-finder:/var/run/oncall-buddy-finder
-    #entrypoint: ash -c "while true; do echo '.'; sleep 2; done"
+    #entrypoint: sh -c "while true; do echo '.'; sleep 2; done"
