@@ -1,7 +1,9 @@
 {
   "CalendarId": "calendar_id_xxxxxxxxxxxx@group.calendar.google.com",
   "GoogleApiSecretFile": "../secrets/client_secret.json",
-  "GoogleApiTokenFile": "/tmp/oncall-buddy-finder/google_token.json",
+  "UserID": "me@example.com",
+  "RemoteBucketName": "build-and-run-buddies",
+  "RemoteFileName": "current-buddy.json",
   "CheckAtStartup": true,
   "CheckFirstAt": "08:00",
   "CheckInterval": "1h",
