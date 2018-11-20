@@ -17,10 +17,9 @@ It also include some notifications capabilities using a slack webhook to inform 
 ## Requirements
 
 You will need the following:
-* a Google Api Secrets File (from https://console.developers.google.com)
-* a google token which will be created on 1st run and asking you to enter the url in a browser and copy paste the oauth2 token generated
+* a Google Api Service Account Key (from https://console.developers.google.com)
 * a config file
-* a preconfigured slack webhook (if you want to use notifications)
+* a pre-configured slack webhook (if you want to use notifications)
 
 ## Install
 
@@ -32,20 +31,23 @@ go run oncall-buddy-finder.go
 
 ## Configuration
 
-Configuration is handled as 3 levels (in the order of precedence)
-* JSON config file
-* Env vars
-* default values
+Configuration is handled as 3 levels (in the order of precedence):
+
+    * JSON config file
+    * Env vars
+    * default values
 
 The program will try to guess the best config file for you:
-* $CONFIG if ($CONFIG is defined)
-* oncall-buddy-finder.$ENV.json (if $ENV is set)
-* oncall-buddy-finder.json
+
+    * $CONFIG if ($CONFIG is defined)
+    * oncall-buddy-finder.$ENV.json (if $ENV is set)
+    * oncall-buddy-finder.json
 
 ## Default Values
 
 * GoogleApiSecretFile: "client_secret.json",
 * CalendarId: "",
+* UserID: "me@example.com",
 * TimezoneName: "UTC",
 * CheckInterval (in minutes): 60,
 * BuddiesList: {},
@@ -54,7 +56,6 @@ The program will try to guess the best config file for you:
 * NotificationInterval (in hours): 12,
 * FileTemplate: "/etc/oncall-buddy-finder/oncall.vars.tpl",
 * FileDest: "/var/run/oncall.vars",
-
 
 ## Contribute
 

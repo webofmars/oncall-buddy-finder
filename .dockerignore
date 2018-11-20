@@ -7,4 +7,11 @@
 **/*.sublime-project
 
 # project stuff
-/secrets/
+secrets/
+pkg/**
+!pkg/.gitkeep
+bin/**
+!bin/.gitkeep
+!pkg/dep/sources/.gitkeep
+#src/github.com/webofmars/oncall-buddy-finder/vendor/**
+#!src/github.com/webofmars/oncall-buddy-finder/vendor/.gitkeep

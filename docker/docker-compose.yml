@@ -1,13 +1,18 @@
-version: '3'
+version: '3.7'
 
 services:
-
   oncallbuddyfinder:
-    image: webofmars/oncall-buddy-finder:develop
+    # this is used for delve forks
+    security_opt:
+      - seccomp:unconfined
+    image: webofmars/oncall-buddy-finder:dev-rc
     stdin_open: true
     tty: true
+    ports:
+      - "8000:8000"
+      #- "40000:40000"
     volumes:
-      - ../secrets/client_secret_770159757646-k0e8c6j0mo9csb715un12br3gjddtacp.apps.googleusercontent.com.json:/etc/oncall-buddy-finder/client_secret.json
+      - ../secrets/oncall-budy-finder-fea585821673.json:/etc/oncall-buddy-finder/client_secret.json
       - ../secrets/config-docker.json:/etc/oncall-buddy-finder/config-docker.json
-      - /tmp/oncall-buddy-finder:/var/run/oncall-buddy-finder
-    #entrypoint: sh -c "while true; do echo '.'; sleep 2; done"
+      #- /tmp/oncall-buddy-finder:/var/run/oncall-buddy-finder
+    #entrypoint: ['/usr/local/bin/dlv', '--listen=:40000', '--headless=true', '--api-version=2', 'exec', '/usr/local/bin/oncall-buddy-finder']
