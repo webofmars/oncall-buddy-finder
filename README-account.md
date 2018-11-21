@@ -22,5 +22,6 @@ SERVICE_ACCOUNT_FILE_PATH=key.json USER_ID=user@domain.com CALENDAR_ID=primary .
     * select a project
     * click on email of your service account
     * click on "Edit" button
+    * Activate Domain wide delegation
     * create new key as JSON
     * use this key as credentials for your app
