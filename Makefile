@@ -1,21 +1,30 @@
-GOPATH := $(shell pwd)
-
 .PHONY: clean docker
-all: clean build docker
+all: clean install build docker
 
-clean:
+BIN=bin/
+SRC=src/
+
+VENDOR=vendor/
+
+MAIN=oncall-buddy-finder.go
+EXE=oncall-buddy-finder
+
+clean: ## clean repo state
 	go clean
 	rm -rf bin/*
 	rm -rf pkg/*
-	rm -rf src/github.com/webofmars/oncall-buddy-finder/vendor/*
+	rm -rf vendor/
 
-build:
-	export GOPATH=${GOPATH} && \
-	cd src/github.com/webofmars/oncall-buddy-finder && \
-	dep ensure && \
-	go build oncall-buddy-finder.go && \
-	go install && \
-	touch vendor/.gitkeep
+install:
+	go mod download
+	go mod verify
+	go mod tidy
+	go mod vendor
 
-docker:
+build: install $(BIN)$(EXE) ## builds the app
+
+$(BIN)$(EXE): $(SRC)$(MAIN)
+	go build -o $@ $<
+
+docker: ## builds the docker container
 	docker build -t webofmars/oncall-buddy-finder:dev-rc .

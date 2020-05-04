@@ -15,3 +15,6 @@ bin/**
 !pkg/dep/sources/.gitkeep
 src/github.com/webofmars/oncall-buddy-finder/vendor/**
 !src/github.com/webofmars/oncall-buddy-finder/vendor/.gitkeep
+
+# vendor stuff
+vendor/
